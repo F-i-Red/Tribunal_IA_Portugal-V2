@@ -96,6 +96,8 @@ Instalar dependências:
 No terminal, corre:
 ```bash
 pip install -r requirements.txt
+ou
+pip install langchain langchain-community pypdf chromadb openai python-dotenv tiktoken
 ```
 Correr o Maestro:
 ```
