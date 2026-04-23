@@ -30,5 +30,42 @@ O Tribunal não decide sem prova. O sistema utiliza um **Loop de Instrução Rec
 * **Justiça para Crianças:** Tradução instantânea de jargão jurídico para linguagem corrente.
 * **Estimativa de Custas:** Cálculo aproximado de taxas de justiça e honorários.
 
+## 🔗 Fontes Oficiais de Dados (Dataset Legislativo)
+Deves adicionar ao teu ficheiro para garantir que o juiz saiba onde buscar a "Verdade Jurídica":
+
+Para garantir o rigor técnico e a conformidade com o Ordenamento Jurídico Português, o Tribunal IA Portugal utiliza as seguintes fontes de dados oficiais:
+
+### 1. Legislação Consolidada (DRE - Diário da República Eletrónico)
+Constituição da República Portuguesa: https://dre.pt/dre/legislacao-consolidada/decreto-aprovacao-constituicao-1976-115598
+
+Código Civil: https://dre.pt/dre/legislacao-consolidada/decreto-lei/1966-34509075
+
+Código Penal: https://dre.pt/dre/legislacao-consolidada/decreto-lei/1982-34522695
+
+Código de Processo Penal: https://dre.pt/dre/legislacao-consolidada/decreto-lei/1987-34551175
+
+Código de Processo Civil: https://dre.pt/dre/legislacao-consolidada/lei/2013-34580575
+
+Código do Trabalho: https://dre.pt/dre/legislacao-consolidada/lei/2009-34546475
+
+### 2. Jurisprudência e Precedentes (DGSI - Bases Jurídicas)
+Portal Geral de Pesquisa (Acórdãos dos Tribunais Superiores): http://www.dgsi.pt/
+
+Supremo Tribunal de Justiça (STJ): http://www.dgsi.pt/jstj.nsf
+
+Tribunal da Relação de Lisboa (TRL): http://www.dgsi.pt/jtrl.nsf
+
+Tribunal da Relação do Porto (TRP): http://www.dgsi.pt/jtrp.nsf
+
+### 3. Custas e Mediação
+Regulamento das Custas Processuais (RCP): https://dre.pt/dre/legislacao-consolidada/decreto-lei/2008-34413675
+
+Portal dos Julgados de Paz (Resolução Alternativa de Litígios): https://julgadosdepaz.mj.pt/
+
+## 💡 Nota de Implementação
+Este protótipo conceptual foi desenhado para que os agentes (Detetive, Advogados e Juízes) utilizem estes links como base de consulta prioritária, garantindo que a análise factual e as sentenças simuladas refletem a letra da lei vigente em Portugal.
+
+---
+
 ## ⚠️ Aviso Legal
 Este projeto tem fins educativos e de simulação. Não substitui o aconselhamento jurídico profissional por um advogado inscrito na Ordem dos Advogados.
