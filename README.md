@@ -75,11 +75,11 @@ Este protótipo conceptual foi desenhado para que os agentes (Detetive, Advogado
 │   ├── acusacao.py      <-- Advogado do Diabo (Rigor da Lei)
 │   ├── defesa.py        <-- Guardião das Garantias (CRP)
 │   ├── juiz.py          <-- O Coletivo (Gera as 3 Realidades Paralelas)
-│   └── escrivao.py      <-- Redator, tradutor para crianças e custos
+│   └── escrivao.py      <-- Redator e custos
 ├── data/
-│   └── links_fonte.md   <-- Aquela lista de links que copiaste
+│   └── links_fonte.md   <-- A lista de links que copiaste
 ├── templates/
-│   └── ata_final.md     <-- O "design" bonito do documento final
+│   └── ata_final.md
 └── README.md
 ```
 
