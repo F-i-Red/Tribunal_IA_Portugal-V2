@@ -108,6 +108,15 @@ pip install langchain-google-genai
 ```
 python main.py
 ```
+### Para a api.py (interface online)
+Instala o Streamlit:
+```
+pip install streamlit
+```
+Correr a app com:
+```
+streamlit run app.py
+```
 ---
 
 ## ⚠️ Aviso Legal
