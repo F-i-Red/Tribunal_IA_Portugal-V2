@@ -99,6 +99,8 @@ Instalar dependências:
 pip install -r requirements.txt
 ou
 pip install langchain langchain-community pypdf chromadb openai python-dotenv tiktoken
+e
+pip install langchain-google-genai
 ```
 ### 2 - Coloca a tua API key no ficheiro .env
 
