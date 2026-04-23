@@ -5,7 +5,7 @@ from langchain_openai import ChatOpenAI
 
 load_dotenv()
 
-def get_llm(temperature=0.3, model="google/gemini-2.0-flash-001"):
+def get_llm(temperature=0.3, model="openai/gpt-3.5-turbo"):  # <--- ALTERA AQUI
     """Configuração central do LLM via OpenRouter (fácil trocar modelo)."""
     return ChatOpenAI(
         model_name=model,
