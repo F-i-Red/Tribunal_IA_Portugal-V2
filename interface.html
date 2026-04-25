@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tribunal IA Portugal</title>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1410;
+    --parchment: #f5f0e8;
+    --parchment-dark: #ece5d4;
+    --gold: #8b6914;
+    --gold-light: #c9952a;
+    --crimson: #7a1e1e;
+    --crimson-light: #a83232;
+    --sage: #3a5a3a;
+    --border: #c4b89a;
+    --shadow: rgba(26,20,16,0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--parchment);
+    color: var(--ink);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.7;
+    min-height: 100vh;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--ink);
+    color: var(--parchment);
+    text-align: center;
+    padding: 2.5rem 2rem 2rem;
+    border-bottom: 4px solid var(--gold);
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 60px,
+      rgba(139,105,20,0.04) 60px,
+      rgba(139,105,20,0.04) 61px
+    );
+  }
+  .header-ornament {
+    font-family: 'IM Fell English', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    color: var(--gold-light);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+  }
+  header h1 {
+    font-family: 'IM Fell English', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    line-height: 1.15;
+  }
+  header h1 span { color: var(--gold-light); }
+  .header-sub {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: rgba(245,240,232,0.55);
+    margin-top: 0.4rem;
+    letter-spacing: 0.05em;
+  }
+  .flag { font-size: 1.4rem; margin: 0 0.4rem; }
+
+  /* ── LAYOUT ── */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* ── AGENTS BAR ── */
+  .agents-bar {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 1.8rem 0 2rem;
+  }
+  .agent-badge {
+    font-size: 0.72rem;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.08em;
+    padding: 0.3rem 0.75rem;
+    border: 1px solid var(--border);
+    color: #6b5c3e;
+    background: rgba(255,255,255,0.4);
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+
+  /* ── FORM CARD ── */
+  .card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--gold);
+    padding: 2rem 2.2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 16px var(--shadow);
+    position: relative;
+  }
+  .card-title {
+    font-family: 'IM Fell English', serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .card-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    margin-left: 0.5rem;
+  }
+
+  label {
+    display: block;
+    font-size: 0.8rem;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a6845;
+    margin-bottom: 0.5rem;
+  }
+
+  textarea, input[type="text"] {
+    width: 100%;
+    background: var(--parchment);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 0.85rem 1rem;
+    font-family: 'Crimson Pro', serif;
+    font-size: 1rem;
+    color: var(--ink);
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  textarea:focus, input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(139,105,20,0.1);
+  }
+  textarea { min-height: 120px; }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  @media (max-width: 580px) { .form-row { grid-template-columns: 1fr; } }
+
+  /* ── INSTRUCAO FIELDS ── */
+  .instrucao-block {
+    background: var(--parchment-dark);
+    border: 1px dashed var(--border);
+    padding: 1.2rem 1.4rem;
+    margin-top: 1rem;
+    display: none;
+  }
+  .instrucao-block.visible { display: block; }
+  .instrucao-block label { color: var(--crimson); }
+
+  /* ── BOTÕES ── */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--ink);
+    color: var(--parchment);
+    border: none;
+    padding: 0.85rem 2.2rem;
+    font-family: 'IM Fell English', serif;
+    font-size: 1.05rem;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 1.4rem;
+    border-bottom: 3px solid var(--gold);
+  }
+  .btn-primary:hover { background: #2d2419; transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--gold);
+    padding: 0.5rem 1.2rem;
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    cursor: pointer;
+    margin-top: 0.8rem;
+    transition: background 0.2s;
+  }
+  .btn-secondary:hover { background: var(--parchment-dark); }
+
+  /* ── PROGRESSO ── */
+  #progress-section { display: none; }
+  #progress-section.visible { display: block; }
+
+  .progress-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1.5rem;
+  }
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.88rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: #999;
+    border-left: 2px solid transparent;
+    transition: all 0.3s;
+  }
+  .step.active {
+    color: var(--gold);
+    border-left-color: var(--gold);
+    background: rgba(139,105,20,0.05);
+  }
+  .step.done {
+    color: var(--sage);
+    border-left-color: var(--sage);
+  }
+  .step.error {
+    color: var(--crimson);
+    border-left-color: var(--crimson);
+  }
+  .step-icon { font-size: 1rem; width: 1.4rem; text-align: center; }
+  .step-spinner {
+    width: 14px; height: 14px;
+    border: 2px solid rgba(139,105,20,0.3);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .progress-bar-wrap {
+    height: 3px;
+    background: var(--border);
+    margin-bottom: 1.5rem;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    width: 0%;
+    transition: width 0.6s ease;
+  }
+
+  /* ── RESULTADO ── */
+  #result-section { display: none; }
+  #result-section.visible { display: block; }
+
+  .result-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--border);
+  }
+  .result-header h2 {
+    font-family: 'IM Fell English', serif;
+    font-size: 1.4rem;
+    color: var(--gold);
+  }
+
+  .sentenca-tabs {
+    display: flex;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.2rem;
+  }
+  .tab {
+    padding: 0.4rem 1rem;
+    font-size: 0.78rem;
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: #7a6845;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab.active { background: var(--ink); color: var(--parchment); border-color: var(--ink); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .ata-box {
+    background: var(--parchment);
+    border: 1px solid var(--border);
+    padding: 1.8rem 2rem;
+    font-size: 0.93rem;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    font-family: 'Crimson Pro', serif;
+    max-height: 520px;
+    overflow-y: auto;
+    position: relative;
+  }
+  .ata-box::-webkit-scrollbar { width: 6px; }
+  .ata-box::-webkit-scrollbar-track { background: var(--parchment-dark); }
+  .ata-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* Decorative corner */
+  .ata-box::before {
+    content: '§';
+    position: absolute;
+    top: 0.8rem; right: 1rem;
+    font-size: 3rem;
+    color: rgba(139,105,20,0.08);
+    font-family: 'IM Fell English', serif;
+    pointer-events: none;
+  }
+
+  .termometro-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 0.25rem 0.75rem;
+    border: 1px solid currentColor;
+    margin-bottom: 1rem;
+  }
+  .termometro-badge.fragil { color: var(--crimson); }
+  .termometro-badge.moderada { color: #8a6200; }
+  .termometro-badge.solida { color: var(--sage); }
+
+  /* ── INSTRUCAO CHAT ── */
+  .instrucao-chat {
+    background: var(--parchment-dark);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--gold);
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .instrucao-chat p { font-style: italic; color: #5a4a2e; margin-bottom: 0.8rem; }
+  .lacunas-list { list-style: none; }
+  .lacunas-list li {
+    padding: 0.3rem 0 0.3rem 1.2rem;
+    position: relative;
+    font-size: 0.92rem;
+    color: var(--ink);
+  }
+  .lacunas-list li::before { content: '—'; position: absolute; left: 0; color: var(--gold); }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.78rem;
+    color: #9a8870;
+    font-style: italic;
+    border-top: 1px solid var(--border);
+    margin-top: 3rem;
+  }
+
+  /* ── ANIMATIONS ── */
+  .fade-in { animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  .ornamental-divider {
+    text-align: center;
+    color: var(--gold);
+    font-size: 1.2rem;
+    margin: 1.5rem 0;
+    letter-spacing: 0.5rem;
+    opacity: 0.5;
+  }
+
+  /* Config toggle */
+  .config-toggle {
+    font-size: 0.78rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: #9a8870;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1rem;
+    user-select: none;
+  }
+  .config-toggle:hover { color: var(--gold); }
+  .config-panel { display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--border); }
+  .config-panel.open { display: block; }
+
+  select {
+    width: 100%;
+    background: var(--parchment);
+    border: 1px solid var(--border);
+    padding: 0.7rem 1rem;
+    font-family: 'Crimson Pro', serif;
+    font-size: 1rem;
+    color: var(--ink);
+    outline: none;
+    cursor: pointer;
+  }
+  select:focus { border-color: var(--gold); }
+
+  .aviso-legal {
+    font-size: 0.78rem;
+    color: #9a8870;
+    font-style: italic;
+    text-align: center;
+    margin-top: 1rem;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-ornament">⚖ República Portuguesa ⚖</div>
+  <h1><span class="flag">🏛️</span> Tribunal <span>IA</span> Portugal <span class="flag">🇵🇹</span></h1>
+  <div class="header-sub">Simulador Judicial de Alta Fidelidade — Baseado no Direito Português Vigente</div>
+</header>
+
+<div class="container">
+
+  <!-- Agentes -->
+  <div class="agents-bar">
+    <div class="agent-badge">🔍 Instrução</div>
+    <div class="agent-badge">🐍 Acusação</div>
+    <div class="agent-badge">🛡️ Defesa</div>
+    <div class="agent-badge">🔨 Coletivo de Juízes</div>
+    <div class="agent-badge">📜 Escrivão</div>
+  </div>
+
+  <!-- FORMULÁRIO INICIAL -->
+  <div id="form-section">
+    <div class="card">
+      <div class="card-title">⚖ Apresentação do Caso</div>
+
+      <label for="caso-input">Descreva o caso em linguagem corrente</label>
+      <textarea id="caso-input" placeholder="Descreva os factos, quem está envolvido, o que aconteceu, quando e onde. Não precisa de usar linguagem jurídica — escreva como se estivesse a contar a um amigo."></textarea>
+
+      <!-- Config panel -->
+      <div class="config-toggle" onclick="toggleConfig()">
+        <span id="config-arrow">▶</span> Configurações avançadas
+      </div>
+      <div class="config-panel" id="config-panel">
+        <div style="margin-bottom:1rem">
+          <label>Chave OpenRouter (sobrepõe o .env)</label>
+          <input type="text" id="api-key-input" placeholder="sk-or-... (opcional se já configurado no .env)">
+        </div>
+        <div>
+          <label>Modelo</label>
+          <select id="modelo-select">
+            <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B — Grátis (recomendado)</option>
+            <option value="google/gemma-3-27b-it:free">Gemma 3 27B — Grátis</option>
+            <option value="mistralai/mistral-7b-instruct:free">Mistral 7B — Grátis (mais rápido)</option>
+            <option value="anthropic/claude-sonnet-4-5">Claude Sonnet — Pago (melhor qualidade)</option>
+            <option value="google/gemini-2.5-pro">Gemini 2.5 Pro — Pago</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="btn-iniciar" onclick="iniciarJulgamento()">
+        ⚖ Dar início ao processo
+      </button>
+    </div>
+
+    <p class="aviso-legal">
+      Esta simulação tem fins exclusivamente educativos. Não substitui aconselhamento jurídico profissional.
+    </p>
+  </div>
+
+  <!-- INSTRUÇÃO ITERATIVA -->
+  <div id="instrucao-section" style="display:none">
+    <div class="card fade-in">
+      <div class="card-title">🔍 Fase de Instrução</div>
+      <div id="instrucao-output"></div>
+      <div id="instrucao-input-area" class="instrucao-block">
+        <label>Resposta às lacunas identificadas pelo Detetive</label>
+        <textarea id="resposta-input" placeholder="Responda às questões levantadas, ou deixe em branco e clique em Avançar para julgar sem mais informação..." style="min-height:80px"></textarea>
+        <div style="display:flex; gap:0.8rem; flex-wrap:wrap">
+          <button class="btn-primary" onclick="responderLacunas()">Responder e continuar instrução</button>
+          <button class="btn-secondary" onclick="avancarParaJulgamento()">Avançar para julgamento →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROGRESSO -->
+  <div id="progress-section">
+    <div class="card fade-in">
+      <div class="card-title">📋 Processo em Curso</div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progress-bar"></div>
+      </div>
+      <div class="progress-steps" id="progress-steps">
+        <div class="step" id="step-relatorio"><span class="step-icon">📋</span> Relatório de Instrução</div>
+        <div class="step" id="step-acusacao"><span class="step-icon">🐍</span> Alegações da Acusação</div>
+        <div class="step" id="step-defesa"><span class="step-icon">🛡️</span> Alegações da Defesa</div>
+        <div class="step" id="step-posdebate"><span class="step-icon">🔍</span> Nota Pós-Debate</div>
+        <div class="step" id="step-sentencas"><span class="step-icon">🔨</span> Deliberação do Coletivo (3 sentenças)</div>
+        <div class="step" id="step-traducoes"><span class="step-icon">📖</span> Tradução para linguagem vulgar</div>
+        <div class="step" id="step-ata"><span class="step-icon">📜</span> Ata Final</div>
+      </div>
+      <p style="font-size:0.82rem; color:#9a8870; font-style:italic; text-align:center">
+        O processo usa modelos gratuitos que têm limite de pedidos por minuto.<br>
+        Aguardas automáticos são normais — o processo completa-se sem intervenção.
+      </p>
+    </div>
+  </div>
+
+  <!-- RESULTADO -->
+  <div id="result-section">
+    <div class="card fade-in">
+      <div class="result-header">
+        <h2>⚖ Ata de Audiência</h2>
+        <div>
+          <span id="termometro-badge" class="termometro-badge fragil">🔴 Evidência Frágil</span>
+        </div>
+      </div>
+
+      <div class="sentenca-tabs">
+        <button class="tab active" onclick="showTab('tab-completo', this)">Ata Completa</button>
+        <button class="tab" onclick="showTab('tab-rigorosa', this)">⚖ Rigorosa</button>
+        <button class="tab" onclick="showTab('tab-garantista', this)">🛡️ Garantista</button>
+        <button class="tab" onclick="showTab('tab-equilibrada', this)">⚡ Equilibrada</button>
+        <button class="tab" onclick="showTab('tab-vulgar', this)">📖 Linguagem Simples</button>
+      </div>
+
+      <div class="tab-content active" id="tab-completo">
+        <div class="ata-box" id="ata-completo"></div>
+      </div>
+      <div class="tab-content" id="tab-rigorosa">
+        <div class="ata-box" id="ata-rigorosa"></div>
+      </div>
+      <div class="tab-content" id="tab-garantista">
+        <div class="ata-box" id="ata-garantista"></div>
+      </div>
+      <div class="tab-content" id="tab-equilibrada">
+        <div class="ata-box" id="ata-equilibrada"></div>
+      </div>
+      <div class="tab-content" id="tab-vulgar">
+        <div class="ata-box" id="ata-vulgar"></div>
+      </div>
+
+      <div class="ornamental-divider">· · · ·</div>
+
+      <div style="display:flex; gap:1rem; flex-wrap:wrap; align-items:center">
+        <button class="btn-primary" onclick="copiarAta()">📋 Copiar Ata Completa</button>
+        <button class="btn-secondary" onclick="novoProcesso()">↩ Novo processo</button>
+      </div>
+
+      <!-- Custas -->
+      <div style="margin-top:2rem; padding-top:1.5rem; border-top:1px solid var(--border)">
+        <div class="card-title" style="font-size:0.95rem">VI. Estimativa de Custas e Prazos</div>
+        <div id="custas-box" style="font-size:0.88rem; line-height:2"></div>
+      </div>
+
+      <p class="aviso-legal" style="margin-top:1.5rem">
+        ⚠️ Esta simulação tem fins exclusivamente educativos e informativos.<br>
+        NÃO substitui o aconselhamento jurídico profissional prestado por um Advogado inscrito na Ordem dos Advogados de Portugal.
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Tribunal IA Portugal · Simulação Jurídica Educativa · Baseado no Direito Português Vigente<br>
+  Para questões jurídicas reais, consulte um Advogado inscrito na Ordem dos Advogados de Portugal
+</footer>
+
+<script>
+// ══════════════════════════════════════════════
+// ESTADO DA APLICAÇÃO
+// ══════════════════════════════════════════════
+const estado = {
+  casoCompleto: '',
+  iteracao: 0,
+  termometro: '🔴 FRAGIL',
+  relatorio: '',
+  acusacao: '',
+  defesa: '',
+  posDebate: '',
+  sentencas: { Rigorosa: '', Garantista: '', Equilibrada: '' },
+  traducoes: { Rigorosa: '', Garantista: '', Equilibrada: '' },
+};
+
+const CUSTAS = [
+  ['Taxas de Justiça (DRE/RCP)', '204,00 € a 612,00 € (processos simples) / até 25.500,00 € (processos complexos)'],
+  ['Honorários de Advogado', '750,00 € a 5.000,00 € (1.ª instância, caso simples a moderado)'],
+  ['Tempo Médio de Resolução', '12 a 36 meses (1.ª instância) / 24 a 60 meses (com recurso)'],
+  ['Alternativa — Julgados de Paz', 'Grátis até 15.000,00 € em litígios elegíveis (julgadosdepaz.mj.pt)'],
+  ['Apoio Judiciário', 'Disponível para cidadãos com carências económicas (Art. 20.º CRP)'],
+];
+
+// ══════════════════════════════════════════════
+// API
+// ══════════════════════════════════════════════
+const MODELOS_FALLBACK = [
+  'meta-llama/llama-3.3-70b-instruct:free',
+  'google/gemma-3-27b-it:free',
+  'mistralai/mistral-7b-instruct:free',
+];
+
+function getChave() {
+  const input = document.getElementById('api-key-input').value.trim();
+  return input || null; // null = usa .env no servidor (modo offline usa key da config)
+}
+
+function getModelo() {
+  return document.getElementById('modelo-select').value;
+}
+
+async function chamarAPI(system, user, maxTokens = 1500) {
+  const chave = getChave();
+  const modeloConfig = getModelo();
+  const modelos = [modeloConfig, ...MODELOS_FALLBACK.filter(m => m !== modeloConfig)];
+
+  for (let i = 0; i < modelos.length; i++) {
+    const modelo = modelos[i];
+    if (i > 0) {
+      const pausa = 8000 * i;
+      await sleep(pausa);
+    }
+    try {
+      const headers = { 'Content-Type': 'application/json' };
+      if (chave) headers['Authorization'] = `Bearer ${chave}`;
+      else {
+        // Tenta ler do .env via endpoint local (modo servidor)
+        // Se não houver servidor, precisa de chave no campo
+        headers['Authorization'] = `Bearer ${window._apiKey || ''}`;
+      }
+      headers['HTTP-Referer'] = 'https://github.com/F-i-Red/Tribunal_IA_Portugal';
+      headers['X-Title'] = 'Tribunal IA Portugal';
+
+      const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          model: modelo,
+          max_tokens: maxTokens,
+          temperature: 0.7,
+          messages: [
+            { role: 'system', content: system },
+            { role: 'user', content: user },
+          ],
+        }),
+      });
+
+      if (res.status === 429) { continue; }
+      if (!res.ok) { continue; }
+
+      const data = await res.json();
+      const conteudo = data?.choices?.[0]?.message?.content?.trim();
+      if (conteudo && conteudo.length > 20) return conteudo;
+    } catch (e) { continue; }
+  }
+
+  // Última tentativa com 30s de espera
+  await sleep(30000);
+  try {
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${chave || window._apiKey || ''}`,
+      'HTTP-Referer': 'https://github.com/F-i-Red/Tribunal_IA_Portugal',
+      'X-Title': 'Tribunal IA Portugal',
+    };
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST', headers,
+      body: JSON.stringify({ model: modelos[0], max_tokens: maxTokens, temperature: 0.7,
+        messages: [{ role:'system', content: system }, { role:'user', content: user }] }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data?.choices?.[0]?.message?.content?.trim() || '❌ Sem resposta.';
+    }
+  } catch (e) {}
+  return '❌ Serviço temporariamente indisponível. Aguarda 1-2 minutos.';
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ══════════════════════════════════════════════
+// PROMPTS DOS AGENTES
+// ══════════════════════════════════════════════
+function dataHoje() {
+  const d = new Date();
+  const meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  return `${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
+}
+
+const SYS_DETETIVE = () => `Eres o Agente de Instrucao do Tribunal IA Portugal. A data de hoje é ${dataHoje()}. Responde SEMPRE e EXCLUSIVAMENTE em Portugues de Portugal. NUNCA uses ingles. O teu papel e o de um magistrado instrutor experiente, com formacao em Direito Processual Penal Portugues. As tuas funcoes sao: 1. Analisar o relato de forma critica e imparcial. 2. Classificar as provas existentes segundo o CPP. 3. Identificar lacunas factuais. 4. Calcular o Termometro de Evidencia: FRAGIL (🔴), MODERADA (🟡) ou SOLIDA (🟢). Usa terminologia juridica portuguesa.`;
+
+const SYS_ACUSACAO = () => `Eres o Representante da Acusacao no Tribunal IA Portugal. A data de hoje é ${dataHoje()}. Responde SEMPRE e EXCLUSIVAMENTE em Portugues de Portugal. NUNCA uses ingles. Perfil: Procurador do Ministerio Publico experiente. Cita artigos reais dos Codigos Penal e CPP. Tom formal: Meritissimo Juiz, Vossa Excelencia. NUNCA inventes artigos.`;
+
+const SYS_DEFESA = () => `Eres o Patrono da Defesa no Tribunal IA Portugal. A data de hoje é ${dataHoje()}. Responde SEMPRE e EXCLUSIVAMENTE em Portugues de Portugal. NUNCA uses ingles. Perfil: Advogado Garantista especialista em Direito Constitucional e Processual Penal. Invoca in dubio pro reo e CRP Art. 32.o. Tom formal: Meritissimo Juiz, Douto Tribunal. NUNCA inventes artigos.`;
+
+const SYS_JUIZ = (perfil) => `Eres um membro do Coletivo de Juizes do Tribunal IA Portugal — perfil ${perfil}. A data de hoje é ${dataHoje()}. Responde SEMPRE e EXCLUSIVAMENTE em Portugues de Portugal. NUNCA uses ingles. Proferes sentencas formais com: RELATORIO, SANEAMENTO, FUNDAMENTACAO DE FACTO, FUNDAMENTACAO DE DIREITO, DISPOSITIVO. O DISPOSITIVO deve ter uma decisao clara e concreta. NUNCA inventes artigos.`;
+
+const SYS_ESCRIVAO = () => `Eres o Escrivao de Direito do Tribunal IA Portugal. A data de hoje é ${dataHoje()}. Responde SEMPRE e EXCLUSIVAMENTE em Portugues de Portugal. NUNCA uses ingles. Para traducao em linguagem vulgar: frases simples, tom amigavel, maximo 4 paragrafos.`;
+
+// ══════════════════════════════════════════════
+// UI HELPERS
+// ══════════════════════════════════════════════
+function toggleConfig() {
+  const panel = document.getElementById('config-panel');
+  const arrow = document.getElementById('config-arrow');
+  panel.classList.toggle('open');
+  arrow.textContent = panel.classList.contains('open') ? '▼' : '▶';
+}
+
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function setStep(id, status) {
+  const el = document.getElementById(id);
+  el.classList.remove('active', 'done', 'error');
+  // Remove spinner
+  const existing = el.querySelector('.step-spinner');
+  if (existing) existing.remove();
+
+  if (status === 'active') {
+    el.classList.add('active');
+    const spinner = document.createElement('div');
+    spinner.className = 'step-spinner';
+    el.appendChild(spinner);
+  } else if (status === 'done') {
+    el.classList.add('done');
+    el.querySelector('.step-icon').textContent = '✓';
+  } else if (status === 'error') {
+    el.classList.add('error');
+  }
+}
+
+function setProgress(pct) {
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+function mostrarInstrucaoOutput(texto, termometro, lacunas) {
+  const div = document.getElementById('instrucao-output');
+  const tClass = termometro.includes('🟢') ? 'solida' : termometro.includes('🟡') ? 'moderada' : 'fragil';
+  div.innerHTML = `
+    <span class="termometro-badge ${tClass}">${termometro}</span>
+    <div class="instrucao-chat">
+      <p>${texto.replace(/\n/g, '<br>')}</p>
+      ${lacunas.length ? `<ul class="lacunas-list">${lacunas.map(l => `<li>${l}</li>`).join('')}</ul>` : ''}
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════════════
+// FLUXO PRINCIPAL
+// ══════════════════════════════════════════════
+async function iniciarJulgamento() {
+  const caso = document.getElementById('caso-input').value.trim();
+  if (!caso) { alert('Por favor, descreva o caso antes de iniciar.'); return; }
+
+  const chave = document.getElementById('api-key-input').value.trim();
+  if (!chave) {
+    if (!confirm('Não introduziu uma chave OpenRouter. Sem chave a interface não consegue contactar a API.\n\nClique OK para continuar na mesma (se tiver o .env configurado no servidor), ou Cancelar para introduzir a chave.')) return;
+  }
+
+  estado.casoCompleto = caso;
+  estado.iteracao = 0;
+
+  document.getElementById('form-section').style.display = 'none';
+  document.getElementById('instrucao-section').style.display = 'block';
+  document.getElementById('instrucao-section').scrollIntoView({ behavior: 'smooth' });
+
+  await correrInstrucao();
+}
+
+async function correrInstrucao() {
+  const loadDiv = document.getElementById('instrucao-output');
+  loadDiv.innerHTML = '<p style="color:#9a8870; font-style:italic; font-size:0.9rem">🔍 O Detetive está a analisar os factos...</p>';
+  document.getElementById('instrucao-input-area').classList.remove('visible');
+
+  const prompt = `Analisa o seguinte caso (Iteracao #${estado.iteracao + 1}):\n\nRELATO:\n${estado.casoCompleto}\n\nResponde APENAS em Portugues de Portugal. Formato obrigatorio:\n\nTERMOMETRO: [🔴 FRAGIL / 🟡 MODERADA / 🟢 SOLIDA]\n\nAVALIACAO: [Dois paragrafos de analise factual]\n\nLACUNAS:\n- [Lacuna 1]\n- [Lacuna 2, se existir]\n\nPRONTO_PARA_JULGAR: [SIM / NAO]`;
+
+  const resposta = await chamarAPI(SYS_DETETIVE(), prompt, 700);
+
+  // Parse
+  estado.iteracao++;
+  const pronto = resposta.toUpperCase().includes('PRONTO_PARA_JULGAR: SIM');
+
+  if (resposta.includes('🟢')) estado.termometro = '🟢 SOLIDA';
+  else if (resposta.includes('🟡')) estado.termometro = '🟡 MODERADA';
+  else estado.termometro = '🔴 FRAGIL';
+
+  // Extrai lacunas
+  const lacunas = [];
+  let emLacunas = false;
+  for (const linha of resposta.split('\n')) {
+    if (linha.toUpperCase().includes('LACUNAS:')) { emLacunas = true; continue; }
+    if (emLacunas && linha.trim().startsWith('-')) lacunas.push(linha.trim().slice(1).trim());
+    else if (emLacunas && linha.trim() && !linha.trim().startsWith('-') && !linha.toUpperCase().includes('PRONTO')) emLacunas = false;
+  }
+
+  mostrarInstrucaoOutput(resposta, estado.termometro, lacunas);
+
+  if (pronto || estado.iteracao >= 4) {
+    await avancarParaJulgamento();
+  } else if (lacunas.length > 0) {
+    document.getElementById('instrucao-input-area').classList.add('visible');
+  } else {
+    await avancarParaJulgamento();
+  }
+}
+
+async function responderLacunas() {
+  const resposta = document.getElementById('resposta-input').value.trim();
+  if (resposta) {
+    estado.casoCompleto += `\n[Informação adicional #${estado.iteracao}]: ${resposta}`;
+  }
+  document.getElementById('resposta-input').value = '';
+  await correrInstrucao();
+}
+
+async function avancarParaJulgamento() {
+  document.getElementById('instrucao-section').style.display = 'none';
+  document.getElementById('progress-section').classList.add('visible');
+  document.getElementById('progress-section').scrollIntoView({ behavior: 'smooth' });
+  await correrJulgamento();
+}
+
+async function correrJulgamento() {
+  // 1. RELATÓRIO
+  setStep('step-relatorio', 'active'); setProgress(5);
+  const promptRelatorio = `Redige o RELATORIO DE INSTRUCAO formal para o Tribunal Coletivo. Data: ${dataHoje()}. Responde APENAS em Portugues de Portugal.\n\nCASO:\n${estado.casoCompleto}\n\nEstrutura: 1. Tipo de litigio 2. Partes 3. Resumo factual 4. Provas e indicios 5. Termometro de Evidencia 6. Enquadramento juridico 7. Lacunas 8. Conclusao`;
+  estado.relatorio = await chamarAPI(SYS_DETETIVE(), promptRelatorio, 2000);
+  setStep('step-relatorio', 'done'); setProgress(15);
+
+  await sleep(5000);
+
+  // 2. ACUSAÇÃO
+  setStep('step-acusacao', 'active'); setProgress(20);
+  const promptAcusacao = `Constroi as ALEGACOES DE ACUSACAO formais. Responde APENAS em Portugues de Portugal.\n\nRELATORIO DE INSTRUCAO:\n${estado.relatorio.slice(0,1500)}\n\nEstrutura: 1. Cabecalho formal 2. Qualificacao juridica com artigos 3. Ilicitude 4. Dolo 5. Pedido concreto 6. Subscricao`;
+  estado.acusacao = await chamarAPI(SYS_ACUSACAO(), promptAcusacao, 1200);
+  setStep('step-acusacao', 'done'); setProgress(30);
+
+  await sleep(5000);
+
+  // 3. DEFESA
+  setStep('step-defesa', 'active'); setProgress(35);
+  const promptDefesa = `Constroi as ALEGACOES DE DEFESA formais. Responde APENAS em Portugues de Portugal.\n\nRELATORIO:\n${estado.relatorio.slice(0,1000)}\n\nACUSACAO:\n${estado.acusacao.slice(0,600)}\n\nEstrutura: 1. Cabecalho 2. Contradicao ponto-a-ponto 3. Exclusao ilicitude/culpa 4. In dubio pro reo 5. Atenuantes 6. Pedido 7. Subscricao`;
+  estado.defesa = await chamarAPI(SYS_DEFESA(), promptDefesa, 1200);
+  setStep('step-defesa', 'done'); setProgress(45);
+
+  await sleep(5000);
+
+  // 4. PÓS-DEBATE
+  setStep('step-posdebate', 'active'); setProgress(50);
+  const promptPosDebate = `Apos as alegacoes, identifica pontos divergentes nao esclarecidos e orienta o Coletivo de Juizes. Responde em Portugues. Titulo: NOTA DE INSTRUCAO POS-DEBATE. Maximo 3 paragrafos.\n\nCASO:\n${estado.casoCompleto.slice(0,500)}\nACUSACAO:\n${estado.acusacao.slice(0,500)}\nDEFESA:\n${estado.defesa.slice(0,500)}`;
+  estado.posDebate = await chamarAPI(SYS_DETETIVE(), promptPosDebate, 600);
+  setStep('step-posdebate', 'done'); setProgress(55);
+
+  await sleep(5000);
+
+  // 5. SENTENÇAS (3)
+  setStep('step-sentencas', 'active'); setProgress(60);
+  const relatorioCompleto = estado.relatorio + '\n\nNOTA POS-DEBATE:\n' + estado.posDebate;
+
+  const perfis = {
+    Rigorosa: 'JUIZ LEGALISTA-RIGOROSO — aplica a lei de forma estrita, favorece a condenacao dentro do quadro legal, pena mais elevada em caso de duvida.',
+    Garantista: 'JUIZ GARANTISTA-CONSTITUCIONAL — prioriza in dubio pro reo e CRP Art. 32.o, absolve em caso de duvida probatoria.',
+    Equilibrada: 'JUIZ PRAGMATICO-EQUILIBRADO — pondera ambas as teses, busca solucao justa, pode propor penas alternativas.',
+  };
+
+  for (const [nome, instrucoes] of Object.entries(perfis)) {
+    const promptSentenca = `Perfil: ${instrucoes}\n\nRELATORIO:\n${relatorioCompleto.slice(0,1200)}\nACUSACAO:\n${estado.acusacao.slice(0,600)}\nDEFESA:\n${estado.defesa.slice(0,600)}\n\nProfere sentenca completa com RELATORIO, SANEAMENTO, FUNDAMENTACAO DE FACTO, FUNDAMENTACAO DE DIREITO e DISPOSITIVO concreto. Responde APENAS em Portugues.`;
+    estado.sentencas[nome] = await chamarAPI(SYS_JUIZ(nome), promptSentenca, 2000);
+    await sleep(5000);
+  }
+  setStep('step-sentencas', 'done'); setProgress(80);
+
+  // 6. TRADUÇÕES
+  setStep('step-traducoes', 'active'); setProgress(82);
+  for (const [nome, sentenca] of Object.entries(estado.sentencas)) {
+    if (sentenca.startsWith('❌')) { estado.traducoes[nome] = '[Tradução não disponível]'; continue; }
+    const promptTrad = `Traduz para linguagem simples (maximo 4 paragrafos curtos). Responde APENAS em Portugues.\n\nComeca com: "📖 EM LINGUAGEM SIMPLES (${nome.toUpperCase()}):\n\nSENTENCA:\n${sentenca.slice(0,2000)}`;
+    estado.traducoes[nome] = await chamarAPI(SYS_ESCRIVAO(), promptTrad, 500);
+    await sleep(4000);
+  }
+  setStep('step-traducoes', 'done'); setProgress(95);
+
+  // 7. ATA
+  setStep('step-ata', 'active');
+  montarAta();
+  setStep('step-ata', 'done'); setProgress(100);
+
+  await sleep(500);
+  mostrarResultado();
+}
+
+function montarAta() {
+  const agora = new Date();
+  const meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  const dataPt = `${agora.getDate()} de ${meses[agora.getMonth()]} de ${agora.getFullYear()}, ${agora.toTimeString().slice(0,5)}`;
+  const numProcesso = `${agora.getFullYear()}/${String(agora.getMonth()+1).padStart(2,'0')}${String(agora.getDate()).padStart(2,'0')}-${agora.toTimeString().slice(0,5).replace(':','')}`;
+
+  const sep = '='.repeat(72);
+  const linha = '-'.repeat(72);
+
+  estado.ataCompleta = `
+${sep}
+🏛️  TRIBUNAL IA PORTUGAL — ATA DE AUDIÊNCIA DE DISCUSSÃO E JULGAMENTO
+${sep}
+PROCESSO N.º: ${numProcesso}-AUTO
+DATA: ${dataPt}
+TRIBUNAL: Tribunal IA Portugal (Simulação Jurídica Educativa)
+COLETIVO: Magistrado-Presidente IA, Representante da Acusação IA, Patrono da Defesa IA
+
+${linha}
+I. OBJETO DO LITÍGIO
+${linha}
+${estado.casoCompleto}
+
+${linha}
+II. RELATÓRIO DE INSTRUÇÃO (Agente de Instrução)
+${linha}
+${estado.relatorio}
+
+${linha}
+III. ALEGAÇÕES DA ACUSAÇÃO (Ministério Público)
+${linha}
+${estado.acusacao}
+
+${linha}
+IV. ALEGAÇÕES DA DEFESA (Patrono Garantista)
+${linha}
+${estado.defesa}
+
+${linha}
+V. NOTA DE INSTRUÇÃO PÓS-DEBATE (Agente de Instrução)
+${linha}
+${estado.posDebate}
+
+${linha}
+VI. DELIBERAÇÃO — MAPA DE REALIDADES PARALELAS
+${linha}
+
+${'='.repeat(72)}
+SENTENÇA A — LEITURA RIGOROSA (Corrente Legalista)
+${'='.repeat(72)}
+${estado.sentencas.Rigorosa}
+
+${estado.traducoes.Rigorosa}
+
+${'='.repeat(72)}
+SENTENÇA B — LEITURA GARANTISTA (Corrente Constitucional)
+${'='.repeat(72)}
+${estado.sentencas.Garantista}
+
+${estado.traducoes.Garantista}
+
+${'='.repeat(72)}
+SENTENÇA C — LEITURA EQUILIBRADA (Corrente Pragmática)
+${'='.repeat(72)}
+${estado.sentencas.Equilibrada}
+
+${estado.traducoes.Equilibrada}
+
+${sep}
+VII. ESTIMATIVA DE CUSTAS E PRAZOS
+${sep}
+${CUSTAS.map(([k,v]) => `  • ${k}: ${v}`).join('\n')}
+
+${sep}
+VIII. AVISO LEGAL
+${sep}
+Este documento foi gerado por um sistema de simulação jurídica com fins
+exclusivamente educativos e informativos. NÃO substitui o aconselhamento
+jurídico profissional prestado por um Advogado inscrito na Ordem dos Advogados
+de Portugal. Para questões jurídicas reais, consulte sempre um profissional habilitado.
+
+Assinado eletronicamente pelo Escrivão de Direito do Tribunal IA Portugal.
+Processo n.º ${numProcesso} — ${dataPt}
+${sep}`;
+}
+
+function mostrarResultado() {
+  document.getElementById('progress-section').classList.remove('visible');
+  document.getElementById('result-section').classList.add('visible');
+  document.getElementById('result-section').scrollIntoView({ behavior: 'smooth' });
+
+  // Termómetro
+  const badge = document.getElementById('termometro-badge');
+  const t = estado.termometro;
+  badge.textContent = t;
+  badge.className = 'termometro-badge ' + (t.includes('🟢') ? 'solida' : t.includes('🟡') ? 'moderada' : 'fragil');
+
+  // Conteúdo tabs
+  document.getElementById('ata-completo').textContent = estado.ataCompleta;
+  document.getElementById('ata-rigorosa').textContent = estado.sentencas.Rigorosa;
+  document.getElementById('ata-garantista').textContent = estado.sentencas.Garantista;
+  document.getElementById('ata-equilibrada').textContent = estado.sentencas.Equilibrada;
+  document.getElementById('ata-vulgar').textContent =
+    '📖 SENTENÇA A — RIGOROSA\n\n' + estado.traducoes.Rigorosa +
+    '\n\n' + '─'.repeat(60) + '\n\n' +
+    '📖 SENTENÇA B — GARANTISTA\n\n' + estado.traducoes.Garantista +
+    '\n\n' + '─'.repeat(60) + '\n\n' +
+    '📖 SENTENÇA C — EQUILIBRADA\n\n' + estado.traducoes.Equilibrada;
+
+  // Custas
+  document.getElementById('custas-box').innerHTML = CUSTAS
+    .map(([k,v]) => `<div><strong>${k}:</strong> ${v}</div>`).join('');
+}
+
+function copiarAta() {
+  navigator.clipboard.writeText(estado.ataCompleta).then(() => {
+    const btn = event.target;
+    btn.textContent = '✓ Copiado!';
+    setTimeout(() => { btn.textContent = '📋 Copiar Ata Completa'; }, 2000);
+  });
+}
+
+function novoProcesso() {
+  location.reload();
+}
+</script>
+</body>
+</html>
