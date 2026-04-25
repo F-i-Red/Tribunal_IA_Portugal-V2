@@ -53,7 +53,7 @@ ou
 - Python 3.9+
 - Chave GRATUITA do OpenRouter (https://openrouter.ai/)
 
-### 2. Instalar dependências
+### 2. Instalar dependências com o Command Prompt do Windows (CMD)
 ```bash
 pip install -r requirements.txt
 ```
