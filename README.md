@@ -40,6 +40,11 @@ Utilizador descreve o caso
 
 ---
 
+## Podes correr apenas o interface.html
+(faz doanload do ficheiro: https://github.com/F-i-Red/Tribunal_IA_Portugal/blob/main/interface.html)
+
+ou
+
 ## 🚀 Instalação e Uso
 
 ### 1. Requisitos
