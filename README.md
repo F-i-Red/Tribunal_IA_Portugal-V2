@@ -135,17 +135,6 @@ tribunal_ia_fase1/
 
 ---
 
-## 🗺️ Roadmap
-
-| Fase | Funcionalidade | Estado |
-|---|---|---|
-| **Fase 1** | Segurança, anonimização, logging, retry | ✅ Completo |
-| **Fase 2** | RAG com vector store, validação de citações, jurisprudência | 🔄 Próximo |
-| **Fase 3** | Interface Streamlit, visualização do processo | 📋 Planeado |
-| **Fase 4** | API REST, testes de viés, conformidade LGPD | 📋 Planeado |
-
----
-
 ## 📄 Licença
 
 MIT License — Uso educativo e de pesquisa.
