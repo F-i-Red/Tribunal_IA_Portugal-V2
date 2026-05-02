@@ -49,7 +49,10 @@ cp .env.example .env
 ```
 
 ## Uso
+Dois cliques no ficheiro **iniciar_interface.bat**,
+em ambiente Windows
 
+### ou
 ```bash
 # Modo interativo completo (recomendado)
 python main.py
